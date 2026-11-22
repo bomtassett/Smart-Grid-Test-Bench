@@ -1,0 +1,83 @@
+# THE CITADEL - DEPARTMENT OF ELECTRICAL & COMPUTER ENGINEERING
+# Engineer:  Thomas Bassett
+# Created:   2026-11-14
+# Modified:  2026-11-22
+#
+# Project:   Smart Grid Test Bench
+# Module:    M4 - Supervisory Control and Data Acquisition (SCADA)
+# Level:     2F/2G - Communication Servers / Applications
+# File:      Host Service Configuration.
+#
+# Purpose:   Settings of host service that are expected to change from bench to bench: serial ports,
+#            nodes that are polled, timing, alarm limits, load control, demand control, and API address.
+#
+# Notes:     Register addresses and scales are not set here; they are taken from generated/tags.json.
+
+ports:
+  seg1: /tmp/sgtb-seg1  # serial port of node fieldbus
+  seg2: /tmp/sgtb-seg2  # serial port of load control; null = not used
+
+nodes: [NODE-SRC, NODE-SY1]  # nodes polled (CON-M4-13)
+
+database: sgtb_historian.db
+
+poll:
+  period_s: 0.100  # poll period (s) (CAP-M4-19)
+  reply_timeout_s: 0.050
+  node_lost_s: 3.0     # time w/o reply after which node is lost (s) (CAP-M4-32)
+  lcu_missed_polls: 3  # missed polls after which LCU is lost (ICD-6)
+
+historian:
+  sample_period_s: 1.0  # sample period (s)
+  sample_retention_h: 24
+  trend_period_s: 60  # trend period (s)
+  retention_days: 60
+
+alarms:
+  delay_s: 1.0  # time condition must hold before its alarm (s)
+  freq_nominal_hz: 60.0
+  freq_band_pct: 5.0        # frequency alert band (% of nominal) (OBJ 2.1.3)
+  inverter_point: SRC.SYNC  # point @ which inverter output is measured (OBJ 2.1.2)
+  inverter_v_nominal: 12.0
+  inverter_band_pct: 5.0
+  source_active: wall  # source selected: wall | solar (stand-in for IF-03)
+
+derived:
+  # tags and constants of derived quantities (ICD-2_2.4.1)
+  gen_tag: SRC.MAINS.P
+  feeder_z_ohm: {SY1: 1.0, SY2: 1.0, SY3: 1.0, SY4: 1.0}  # feeder impedance per switchyard (ohm)
+
+lcu:
+  ack_retry_s: 0.250  # time to retry of command (s) (ICD-6)
+  ack_fail_s: 0.500   # time after which command has failed (s) (CAP-M4-37)
+  confirm_s: 1.0      # time allowed for contacts to follow command (s)
+
+shed:
+  # automatic load shedding (CAP-M4-38, ICD-6_6.5)
+  current_tag: SRC.MAINS.IRMS      # tag of source bus current
+  sequence: [0, 1, 2, 3, 4, 5, 6]  # automatic shed sequence (contact bits)
+  operator_only: [7]               # contacts opened by operator only (ICD-6 Table 6.4)
+  # runtime settings: default, unit, min, max
+  settings:
+    i_s_max:            [2.9,  A, 0.1, 5.0]
+    shed_fraction:      [0.80, "", 0.5, 1.0]
+    shed_dwell_s:       [1.0,  s, 0.1, 60]   # wait after each shed step
+    restore_margin_s:   [10.0, s, 0.1, 600]  # time below limit before restoration
+    restore_interval_s: [5.0,  s, 0.1, 600]  # wait between restore steps
+    session_timeout_s:  [900,  s, 1, 3600]   # session timeout (CAP-M4-50)
+
+loads:
+  # load cards, one per switchyard node (CAP-M4-57); contacts: shed bits of load
+  i_cap_a: 0.6
+  v_low: 10.8
+  v_high: 13.2
+  v_no_feed: 2.0
+  cards:
+    SY1: {name: West Ashley,      contacts: [1, 3]}
+    SY2: {name: Nucor,            contacts: [0]}
+    SY3: {name: North Charleston, contacts: [5, 6]}
+    SY4: {name: Downtown,         contacts: [2, 4, 7]}
+
+api:
+  bind: 127.0.0.1  # address API listens on
+  port: 8000
