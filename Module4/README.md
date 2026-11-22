@@ -2,6 +2,7 @@
 T. Bassett | 2026-11-22
 
 Module 4 software ready for proof-of-concept testing:
+
 	* master register-map source
 	* register generator
 	* portable Modbus RTU slave library
