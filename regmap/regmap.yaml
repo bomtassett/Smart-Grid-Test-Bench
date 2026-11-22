@@ -1,0 +1,128 @@
+# SGTB Module 4 register map (CST-M4-14).
+# Created:  2026-11-18
+# Modified: 2026-11-22 (v0.2)
+# Author:   T. BASSETT
+#
+# Purpose:  defines addresses for all firmware, host software, and ICD-2/ICD-6 tables.
+#           addresses generated using tools/gen_regmap.py.
+#           NO ADDRESS EDITED BY HAND ANYWHERE ELSE.
+#
+# Notes:    zero-based modbus PDU format.
+#           big-endian multi-register values (high word = low address).
+#           "ok" [+]; "nok" [x].
+
+meta:
+  version: "0.2"
+  date: "2026-11-22"
+  source: "ICD-2 revision 0.4, section 2.4, and ICD-6 revision 0.3, section 6.4"
+
+segments:
+  seg1: {name: "Node fieldbus (ICD-2)", baud: 115200, format: "8N1", bits_per_char: 10}
+  seg2: {name: "Load control (ICD-6)",  baud: 19200,  format: "8N1", bits_per_char: 10}
+
+# ---------------------------------------------------------------- node (ICD-2)
+node:
+  # input regs; read w/ FC 04 ("FC" modbus Function Code)
+  health:
+    - {name: STATUS, addr: 0, type: u16, rate_hz: 1,  desc: "Node status bitfield"}
+    - {name: SEQ,    addr: 1, type: u16, rate_hz: 1,  desc: "Heartbeat, increments each second"}
+    - {name: TIME,   addr: 2, type: u32, rate_hz: 10, unit: ms, desc: "Node time stamp of the published set"}
+    - {name: FWVER,  addr: 80, type: u16, rate_hz: 0, desc: "Firmware version, major in the high byte and minor in the low byte"}
+  status_bits:
+    - {name: SAMPLING,   bit: 0, desc: "Sampling active"}
+    - {name: CAL_VALID,  bit: 1, desc: "Calibration constants valid"}
+    - {name: OVERRANGE,  bit: 2, desc: "A converter channel is over range (reserved: not yet set by the firmware)"}
+    - {name: FAULT,      bit: 3, desc: "Internal fault: a published value of the latest set was not finite and reads 0"}
+    - {name: REC_READY,  bit: 4, desc: "Fault record complete and ready to read"}
+
+  # one block/measurement point ("MP"); start = point_base.
+  # point_base directly after the 4 header regs -> 10 Hz read = 1 request from addr 0, no unused reg
+  # all fields -> f32, 2 regs each (2026-11-21; replaces DD-M4-06 scaled ints)
+        # range_f32 = {+-3.4E38}; resolution ~7 sig figs.
+        # range_required = {0W,100W}(CAP-M4-12)[+]
+  # ac_only = 0 if DC
+  point_base: 4
+  point_block: 16
+  point_fields:
+    - {qty: VRMS, offset: 0,  type: f32, unit: V,   desc: "RMS voltage (or VDC)"}
+    - {qty: IRMS, offset: 2,  type: f32, unit: A,   desc: "RMS current (or IDC)"}
+    - {qty: FREQ, offset: 4,  type: f32, unit: Hz,  desc: "Frequency", ac_only: true}
+    - {qty: ANG,  offset: 6,  type: f32, unit: deg, desc: "Voltage-current phase angle", ac_only: true}
+    - {qty: PF,   offset: 8,  type: f32, unit: "",  desc: "Power factor", ac_only: true}
+    - {qty: P,    offset: 10, type: f32, unit: W,   desc: "Active power"}
+    - {qty: Q,    offset: 12, type: f32, unit: var, desc: "Reactive power", ac_only: true}
+    - {qty: S,    offset: 14, type: f32, unit: VA,  desc: "Apparent power", ac_only: true}
+
+  # polled @ 1 Hz; separate block avoids 10Hz read (ICD-2_2.5)
+  # slow_base = FWVER; slow_base + 1 reserved; energy counters from energy_base.
+  # E -> u32, 0.001 Wh/count (f32_resolution decreases @ large counts)
+  slow_base: 80
+  energy_base: 82
+  energy_field: {qty: E, type: u32, scale: 0.001, unit: Wh, rate_hz: 1, desc: "Cumulative energy"}
+
+  # holding regs; read w/ FC 03, write w/ FC 06 or FC 16.
+  holding:
+    - {name: TIME_SET,     addr: 100, type: u32, unit: ms, desc: "Node time set, written by the host at 1 Hz"}
+    - {name: ENERGY_RESET, addr: 102, type: u16, desc: "Energy reset, bit i resets point i; self-clearing"}
+    - {name: CTRL,         addr: 150, type: u16, desc: "Control word"}
+  ctrl_bits:
+    - {name: SAMPLE_EN,  bit: 0, desc: "Sampling enable"}
+    - {name: REC_ARM,    bit: 1, desc: "Fault record arm"}
+    
+  # measurement calibration: multiply gain 1st, add offset 2nd; 4 regs/channel
+  # channel index = 2 * point index + (0 for voltage, 1 for current).
+  cal_base: 110
+  cal_channels: 8
+  cal_fields:
+    - {name: GAIN,   offset: 0, type: f32}
+    - {name: OFFSET, offset: 2, type: f32}
+
+nodes:
+  - name: SRC
+    id: NODE-SRC
+    address: 1
+    points:
+      - {name: MAINS,   mp: MP-01, kind: ac, tier: "12 V"}
+      - {name: PV,      mp: MP-02, kind: dc, tier: "DC"}
+      - {name: SYNC,    mp: MP-03, kind: ac, tier: "12 V"}
+      - {name: SUBMAIN, mp: MP-04, kind: ac, tier: "24 V"}
+  - name: SY1
+    id: NODE-SY1
+    address: 2
+    points:
+      - {name: SUB,  mp: MP-21, kind: ac, tier: "24 V"}
+      - {name: LOAD, mp: MP-29, kind: ac, tier: "12 V"}
+  - name: SY2
+    id: NODE-SY2
+    address: 3
+    points:
+      - {name: SUB,  mp: MP-22, kind: ac, tier: "24 V"}
+      - {name: LOAD, mp: MP-30, kind: ac, tier: "12 V"}
+  - name: SY3
+    id: NODE-SY3
+    address: 4
+    points:
+      - {name: SUB,  mp: MP-23, kind: ac, tier: "24 V"}
+      - {name: LOAD, mp: MP-31, kind: ac, tier: "12 V"}
+  - name: SY4
+    id: NODE-SY4
+    address: 5
+    points:
+      - {name: SUB,  mp: MP-24, kind: ac, tier: "24 V"}
+      - {name: LOAD, mp: MP-32, kind: ac, tier: "12 V"}
+
+# ------------------------------------------------- load control unit (ICD-6)
+lcu:
+  name: LCU
+  address: 11
+  holding:
+    - {name: CTRL_SHED, tag: LCU.CTRL.SHED, addr: 1, type: u16, desc: "Shed command, bit i = contact i, 1 = OPEN (shed)"}
+  input:
+    - {name: STAT_CONTACTS, tag: LCU.STAT.CONTACTS, addr: 1, type: u16, rate_hz: 10, desc: "Actual contact states, bit i, 1 = open"}
+    - {name: STAT_FAULT,    tag: LCU.STAT.FAULT,    addr: 2, type: u16, rate_hz: 10, desc: "Fault flags"}
+    - {name: HLTH_SEQ,      tag: LCU.HLTH.SEQ,      addr: 3, type: u16, rate_hz: 10, desc: "Free-running loop count (heartbeat)"}
+  contacts: 8
+  fault_bits:
+    - {name: RELAY,  bit: 0, desc: "Relay failure"}
+    - {name: SUPPLY, bit: 1, desc: "Supply out of range"}
+    - {name: CONFIG, bit: 2, desc: "Configuration error"}
