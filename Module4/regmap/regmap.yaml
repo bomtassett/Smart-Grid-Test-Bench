@@ -1,15 +1,20 @@
-# SGTB Module 4 register map (CST-M4-14).
-# Created:  2026-11-18
-# Modified: 2026-11-22 (v0.2)
-# Author:   T. BASSETT
+# THE CITADEL - DEPARTMENT OF ELECTRICAL & COMPUTER ENGINEERING
+# Engineer:  Thomas Bassett
+# Created:   2026-11-18
+# Modified:  2026-11-22 (v0.2)
 #
-# Purpose:  defines addresses for all firmware, host software, and ICD-2/ICD-6 tables.
-#           addresses generated using tools/gen_regmap.py.
-#           NO ADDRESS EDITED BY HAND ANYWHERE ELSE.
+# Project:   Smart Grid Test Bench
+# Module:    M4 - Supervisory Control and Data Acquisition (SCADA)
+# Level:     1D - Controller Network
+# File:      Register Map (CST-M4-14).
 #
-# Notes:    zero-based modbus PDU format.
-#           big-endian multi-register values (high word = low address).
-#           "ok" [+]; "nok" [x].
+# Purpose:   Defines addresses for all firmware, host software, and ICD-2/ICD-6 tables.
+#            Addresses are generated using tools/gen_regmap.py.
+#            NO ADDRESS EDITED BY HAND ANYWHERE ELSE.
+#
+# Notes:     Zero-based modbus PDU format.
+#            Big-endian multi-register values (high word = low address).
+#            "ok" [+]; "nok" [x].
 
 meta:
   version: "0.2"
