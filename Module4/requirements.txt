@@ -1,0 +1,9 @@
+pyyaml
+fastapi
+uvicorn
+# tests only
+httpx
+websockets
+# emulated test of the board firmware only (make emu)
+unicorn
+numpy
