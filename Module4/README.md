@@ -2,18 +2,18 @@
 T. Bassett | 2026-11-22
 
 Module 4 software ready for proof-of-concept testing:
-	- master register-map source
-	- register generator
-	- portable Modbus RTU slave library
-	- measurement node register banks (ICD-2)
-	- load control unit register banks (ICD-6)
-	- measurement math
-	- node application layer
-	- a simulated node on virtual serial ports
-	- the host service, and
-	- NUCLEO-G474RE-specific firmware for the measurement node
+	* master register-map source
+	* register generator
+	* portable Modbus RTU slave library
+	* measurement node register banks (ICD-2)
+	* load control unit register banks (ICD-6)
+	* measurement math
+	* node application layer
+	* simulated node on virtual serial ports
+	* host service
+	* NUCLEO-G474RE-specific firmware for the measurement node
 	
-As of 2026-11-22, the portable parts have been built and tested successfully on a PC. The board firmware compiles and has passed an emulated run-- however, it has not yet run on hardware (see `firmware/board/nucleo_g474re/README.md` and `BRINGUP.md` there). Component delivery schedule remains the largest risk facing the team in advance of the Proof of Concept Demonstration on 2026-12-03.
+As of 2026-11-22, the portable software has been built and tested successfully on a PC. The board firmware compiles, and has passed an emulated run-- however, it has not yet run on hardware (see `firmware/board/nucleo_g474re/README.md` and `BRINGUP.md` there). The component delivery schedule remains the team's largest risk in advance of our Proof of Concept Demonstration on 2026-12-03.
 
 ## Layout
 
@@ -110,7 +110,7 @@ file that is an interface to another layer, a test, a simulation, or a tool.
 ## Integration on the node
 
 Integration is handled in `firmware/board/nucleo_g474re/`, with a UART driver delimiting
-frames with 1.75 ms of silence. The main loop calls
+frames with 1.75 ms of inactivity. The main loop calls
 
     n = mb_slave_process(&slave, rx, rx_len, tx, sizeof tx, &stats);
 
