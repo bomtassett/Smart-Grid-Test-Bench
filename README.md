@@ -31,66 +31,66 @@ The bench is built as four modules.
 Black lines are power, red lines are operator switches and indicator lights,
 blue lines are data and commands, and orange lines are measurements.
 
-## Repository layout
+## Repository Layout
 
-Each module keeps its work in one folder at the root.
+Organized by Module:
 
 | Path | Content |
 | --- | --- |
-| `Module4/` | Module 4 firmware and host software. `Module4/README.md` describes every folder, and `Module4/DIRECTORY.md` lists every file. |
-| `Module4/regmap/` | `regmap.yaml`, the single source of every register address. No address is edited by hand anywhere else. |
-| `Module4/tools/` | `gen_regmap.py`, which validates the register map and generates the files below. |
-| `Module4/generated/` | C headers, the tag table for the host, and the register tables for the interface documents. Generated; not edited. |
-| `Module4/firmware/` | Portable C libraries (Modbus RTU slave, register banks, measurement math, fault record, controller link) and the board firmware for the NUCLEO-G474RE. |
+| `Module4/` | Module 4 firmware and host software. |
+| `Module4/regmap/` | `regmap.yaml`, master register map control file |
+| `Module4/tools/` | `gen_regmap.py` validates master register map and generates register artifacts. |
+| `Module4/generated/` | C headers, tag table for the host, and register tables for interface documents. Generated; not edited. |
+| `Module4/firmware/` | Portable C libraries (Modbus RTU slave, register banks, measurement math, fault record, controller link) and board firmware for the NUCLEO-G474RE node controller. |
 | `Module4/host/` | Host service in Python: fieldbus poller, alarms, demand controller, SQLite historian, and supervisory API. |
 | `Module4/sim/` | Simulated nodes and load control unit on virtual serial ports. |
 | `Module4/tests/` | Unit tests, end-to-end tests, and an emulated run of the board firmware. |
-| `docs/` | Figures used by this file. |
+| `docs/` | Block diagrams, flowcharts, design walkthroughs. |
 
-Folders for Modules 1 to 3 are added by their owners.
+Folders for Modules 1 to 3 are on the way.
 
-## Module 4 software
+## Module 4 Software
 
-The portable code builds and tests on a PC; no bench hardware is needed. The
-commands below are run from `Module4/`.
+Builds and tests on a PC; no bench hardware needed. Run commands from `Module4/`.
 
 | Command | Result |
 | --- | --- |
-| `make test` | Regenerates and checks the register map, then runs the unit tests, the cross-check, and the end-to-end tests. |
-| `make sim` | Runs the simulated nodes and load control unit. |
-| `make host` | Runs the poller, historian, and API against the simulator or the bench. The API is documented at `http://127.0.0.1:8000/docs`. |
+| `make test` | Regenerates and checks master register map, and then runs unit tests, cross-checks, and end-to-end tests. |
+| `make sim` | Runs simulated nodes and load control unit. |
+| `make host` | Runs the poller, historian, and API against the simulator or the bench. API documentation planned. |
 | `make fw` | Builds the five node images for the NUCLEO-G474RE. |
-| `make emu` | Runs the node images on a Cortex-M4 emulator. |
+| `make emu` | Runs node images on a Cortex-M4 emulator. |
 | `python3 tools/gen_regmap.py` | Regenerates `generated/` after any edit to `regmap/regmap.yaml`. |
 
 Requirements:
 
 - Linux, `make`, and a C99 compiler.
-- Python 3 with the packages of `Module4/requirements.txt`.
-- `arm-none-eabi-gcc` for `make fw` only.
+- Python 3 with packages listed in `Module4/requirements.txt`.
+- `arm-none-eabi-gcc` (for `make fw` only).
 
-### Design in brief
+### Design Overview
 
 - **Measurement.** Five nodes sample voltage and current at 3840 Hz and
   compute RMS voltage and current, active, reactive, and apparent power, power
   factor, frequency, and energy for each cycle.
+  - Each node connects to Module 4's custom sensing front-end circuitry. Design
+    docs not included.
 - **Fieldbus.** The host polls every node at 10 Hz over Modbus RTU on RS-485.
-  Measured values are float32 in engineering units.
-- **Fault record.** At a protection trip, a node holds the per-cycle results
+- **Fault record.** During a protection trip the node freezes its per-cycle results
   from 0.2 s before to 2.0 s after the trip, with a clip of raw samples.
-- **Load control.** The host commands eight shed contacts through a load
+- **Load control.** The host commands eight load relays through a load
   control unit on a second RS-485 segment, and sheds and restores load
-  automatically against a demand limit.
-- **Historian.** One SQLite database holds 1 Hz samples for 24 hours and
-  one-minute trends, state changes, commands, alarms, and the audit trail for
+  automatically against a demand limit table.
+- **Historian.** SQLite database holds 1 Hz samples for 24 hours, and
+  one-minute trends, state changes, commands, alarms, and audit trail for
   60 days.
 - **Supervisory API.** The HMI reads live values and sends commands through
   one API with sessions, three roles, and an audit entry for every change.
 
-## Interface documents
+## Interface Documents
 
-The modules meet at six interface control documents. The documents, not the
-code, are the reference for every interface.
+All inter-module interactions are controlled through six internal interface documents,
+issued and maintained by Module 4 ("Big Daddy"). Interface docs not included.
 
 | Document | Title |
 | --- | --- |
@@ -99,36 +99,26 @@ code, are the reference for every interface.
 | ICD-3 | Supervisory API and Data Model |
 | ICD-4 | Status and Data Link, Switchyard Controller to Measurement Node |
 | ICD-5 | Historian Schema and Export |
-| ICD-6 | Load Control Register Map, Host to the Load Control Unit |
+| ICD-6 | Load Control Register Map, Host to LCU |
+
 
 ## Status
 
 As of November 22, 2026:
 
-- The design phase is complete, and the Design Report was issued on
-  November 3, 2026.
-- The Module 4 portable code passes 420 checks in seven test suites and 131
-  register readbacks on a PC.
-- The Module 4 board firmware compiles and passes 109 checks on an emulated
-  board. It has not yet run on hardware.
-- Proof-of-concept testing of each module follows in the fall semester, and
-  integration of the bench in the spring semester (ELEC 422).
-
-## Conventions
-
-- **Source comments.** Every source file opens with the header defined in
-  `Module4/README.md`. Functions are described in one directive, and
-  variables are named with their units.
-- **SCADA level.** Each file header states the level of the file in the
-  ISA112 SCADA model architecture, so that the place of each file in the
-  system is known.
-- **Register addresses.** An address is written with its register type, as in
-  IR 80 (input register) and HR 150 (holding register), zero-based.
-- **Branches.** Work is done on a branch per module and merged into `main`
-  through a pull request.
+- Design phase is complete; Design Report issued on
+  November 3, 2026. Not included.
+- Module 4's portable code passes 420 checks in seven test suites and 131
+  register readbacks on PC.
+- Module 4's board firmware compiles and passes 109 checks on an emulated
+  board. Hardware implementation is pending component delivery.
+- Proof-of-concept testing scheduled for early December 2026; module
+  integration and testing in Spring 2027, with final bench delivery slated
+  for early-April 2027.
 
 ## Contact
 
-Thomas Bassett, Project Manager and Module 4
+tbassett@student.citadel.edu
+Thomas Bassett, Module 4 & Project Manager
 
-Go Dogs
+Go Dogs!
