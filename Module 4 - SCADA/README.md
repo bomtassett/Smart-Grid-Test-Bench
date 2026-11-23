@@ -14,7 +14,7 @@ Module 4 software ready for proof-of-concept testing:
 	* host service
 	* NUCLEO-G474RE-specific firmware for the measurement node
 	
-As of 2026-11-22, the portable software has been built and tested successfully on a PC. The board firmware compiles, and has passed an emulated run-- however, it has not yet run on hardware (see `firmware/board/nucleo_g474re/README.md` and `BRINGUP.md` there). The component delivery schedule remains the team's largest risk in advance of our Proof of Concept Demonstration on 2026-12-03.
+As of 2026-11-22, the software layer has been built and tested successfully on a PC. The board firmware compiles and has passed an emulated run-- however, it has not yet been implemented in hardware (see `firmware/board/nucleo_g474re/README.md` and `BRINGUP.md` there). The team's component delivery schedule remains the largest risk in advance of our proof-of-concept demonstration on 2026-12-03.
 
 ## Layout
 
