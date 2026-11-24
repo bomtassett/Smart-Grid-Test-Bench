@@ -10,13 +10,13 @@ Senior design project, academic year 2026-27.
 
 ## Overview
 
-The bench is a low-voltage model of an electric grid, built for teaching and
-demonstration. A wall source and a solar source feed four transmission
-branches, each with a switchyard that detects a fault, isolates it, and
+The bench is a low-voltage model of an electric grid designed for teaching and
+demonstration. A wall source and an emulated solar source feed four transmission
+branches, each with a switchyard that independently detects a fault, isolates it, and
 restores service from a neighboring branch. Four load modules represent six
 Charleston-area customers and are shed in a fixed order when demand exceeds
 supply. A supervisory system meters the bench, records its history, and gives
-an operator control through a browser.
+an operator visibility and control through a browser.
 
 The bench is built as four modules.
 
