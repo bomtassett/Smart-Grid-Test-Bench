@@ -1,7 +1,7 @@
 # Smart Grid Test Bench (SGTB)
 
 A low-voltage benchtop power grid with dual-source generation, islanded fault protection
-and self-healing restoration (FLISR), automatic load shedding, and an end-to-end, custom-designed
+and self-healing restoration (FLISR), automatic load shedding, and an end-to-end custom-designed
 SCADA stack.
 
 **The Citadel, Department of Electrical and Computer Engineering.**
