@@ -1,7 +1,7 @@
 # THE CITADEL - DEPARTMENT OF ELECTRICAL & COMPUTER ENGINEERING
 # Engineer:  Thomas Bassett
 # Created:   2026-11-20
-# Modified:  2026-11-22
+# Modified:  2026-11-24
 #
 # Project:   Smart Grid Test Bench
 # Module:    M4 - Supervisory Control and Data Acquisition (SCADA)
@@ -44,8 +44,10 @@ DEFS    = -DSTM32G474xx -DHSE_VALUE=24000000U $(NODEDEF) $(EXTRA)
 # board_lock.h is forced into every file, so that register bank is built w/ lock
 CFLAGS  = $(CPU) -std=gnu11 -O2 -g3 -ffunction-sections -fdata-sections -fno-common -fno-math-errno \
           -Wall -Wextra -Werror -Wshadow -Wdouble-promotion -include board_lock.h $(DEFS) $(INC) -MMD -MP
+# --no-warn-rwx-segments is known to GNU ld 2.39 and later only; pass it when linker accepts it
+NOWARN  = $(shell $$($(CC) -print-prog-name=ld) --no-warn-rwx-segments --version >/dev/null 2>&1 && echo -Wl,--no-warn-rwx-segments)																							   
 LDFLAGS = $(CPU) -Tstm32g474re.ld --specs=nano.specs --specs=nosys.specs \
-          -Wl,--gc-sections -Wl,-Map=$(OUT)/$(NAME).map -Wl,--no-warn-rwx-segments
+          -Wl,--gc-sections -Wl,-Map=$(OUT)/$(NAME).map $(NOWARN)
 
 BOARD   = main.c clock.c sampling.c rs485.c dbg.c nv.c stubs.c
 LIB     = $(ROOT)/firmware/lib/modbus_rtu/modbus_slave.c $(ROOT)/firmware/lib/regs/node_regs.c \
