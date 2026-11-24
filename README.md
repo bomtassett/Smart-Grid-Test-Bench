@@ -5,6 +5,7 @@ and self-healing restoration (FLISR), automatic load shedding, and an end-to-end
 SCADA stack.
 
 **The Citadel, Department of Electrical and Computer Engineering.**
+
 Senior design project, academic year 2026-27.
 
 ## Overview
@@ -72,9 +73,8 @@ Requirements:
 
 - **Measurement.** Five nodes sample voltage and current at 3840 Hz and
   compute RMS voltage and current, active, reactive, and apparent power, power
-  factor, frequency, and energy for each cycle.
-  - Each node connects to Module 4's custom sensing front-end circuitry. Design
-    docs not included.
+  factor, frequency, and energy for each cycle. Each node connects to Module 4's custom
+  sensing front-end circuitry. Design doc not included; see Contact to request.
 - **Fieldbus.** The host polls every node at 10 Hz over Modbus RTU on RS-485.
 - **Fault record.** During a protection trip the node freezes its per-cycle results
   from 0.2 s before to 2.0 s after the trip, with a clip of raw samples.
@@ -90,7 +90,7 @@ Requirements:
 ## Interface Documents
 
 All inter-module interactions are controlled through six internal interface documents,
-issued and maintained by Module 4 ("Big Daddy"). Interface docs not included.
+issued and maintained by Module 4. Interface docs not included; see Contact to request.
 
 | Document | Title |
 | --- | --- |
@@ -120,5 +120,3 @@ As of November 22, 2026:
 
 tbassett@student.citadel.edu
 Thomas Bassett, Module 4 & Project Manager
-
-Go Dogs!
