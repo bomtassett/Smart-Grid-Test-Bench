@@ -14,7 +14,7 @@ The following Module 4 components are ready for proof-of-concept testing:
 * host service
 * NUCLEO-G474RE-specific firmware for the measurement node
 
-As of 2026-11-22, the software layer has been built and tested successfully on a PC. The board firmware compiles and has passed an emulated run -- however, it has not yet been implemented in hardware (see `firmware/board/nucleo_g474re/README.md` and `/DESIGN.md`). The component delivery schedule remains the project's largest risk factor in advance of the proof-of-concept testing demonstration on 2026-12-03.
+As of 2026-11-22, the software layer has been built and tested successfully on a PC. The board firmware compiles and has passed an emulated run -- however, it has not yet been implemented in hardware (see `firmware/board/nucleo_g474re/README.md`). The component delivery schedule remains the project's largest risk factor in advance of the proof-of-concept testing demonstration on 2026-12-03.
 
 ## Layout
 
