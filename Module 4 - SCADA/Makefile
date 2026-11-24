@@ -1,7 +1,7 @@
 # THE CITADEL - DEPARTMENT OF ELECTRICAL & COMPUTER ENGINEERING
 # Engineer:  Thomas Bassett
 # Created:   2026-11-14
-# Modified:  2026-11-22
+# Modified:  2026-11-24
 #
 # Project:   Smart Grid Test Bench
 # Module:    M4 - Supervisory Control and Data Acquisition (SCADA)
@@ -11,7 +11,7 @@
 # Purpose:   One place from which register map files are generated, every test is run, simulator
 #            and host service are started, and node firmware is built.
 #
-# Usage:     make test   generator check + eight PC suites
+# Usage:     make test   generator check + seven PC suites + register cross-check
 #            make sim    simulated nodes are started
 #            make host   host service is started
 #            make fw     five node images are built (arm-none-eabi-gcc needed)

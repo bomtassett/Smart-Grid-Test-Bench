@@ -1,5 +1,5 @@
 # SGTB Module 4: Firmware and Host Software
-T. Bassett | 2026-11-23
+T. Bassett | 2026-11-24
 
 The following Module 4 components are ready for proof-of-concept testing:
 
@@ -63,7 +63,7 @@ As of 2026-11-22, the software layer has been built and tested successfully on a
     make emu                       # the node images on the emulator (unicorn, numpy)
     python3 tools/gen_regmap.py    # after any edit to regmap/regmap.yaml
 
-See `DIRECTORY.md` for all files, package history, and the map from test cases to code.
+See `DIRECTORY.md` for all files and the map from test cases to code.
 
 Requires gcc and Python 3 with the packages in `requirements.txt` (`pip install -r requirements.txt`). `generated/` is committed; `make test`
 fails if it is out of date with the YAML source.

@@ -27,7 +27,7 @@ The bench is built as four modules.
 | M3 | Distribution and Load |
 | M4 | Supervisory Control and Data Acquisition (SCADA) |
 
-![System block diagram of the Smart Grid Test Bench](docs/SGTB_L1-block-diagram.svg)
+![System block diagram of the Smart Grid Test Bench](docs/system-block-diagram.svg)
 
 Black lines are power, red lines are operator switches and indicator lights,
 blue lines are data and commands, and orange lines are measurements.
@@ -38,21 +38,22 @@ Organized by Module:
 
 | Path | Content |
 | --- | --- |
-| `Module4/` | Module 4 firmware and host software. |
-| `Module4/regmap/` | `regmap.yaml`, master register map control file |
-| `Module4/tools/` | `gen_regmap.py` validates master register map and generates register artifacts. |
-| `Module4/generated/` | C headers, tag table for the host, and register tables for interface documents. Generated; not edited. |
-| `Module4/firmware/` | Portable C libraries (Modbus RTU slave, register banks, measurement math, fault record, controller link) and board firmware for the NUCLEO-G474RE node controller. |
-| `Module4/host/` | Host service in Python: fieldbus poller, alarms, demand controller, SQLite historian, and supervisory API. |
-| `Module4/sim/` | Simulated nodes and load control unit on virtual serial ports. |
-| `Module4/tests/` | Unit tests, end-to-end tests, and an emulated run of the board firmware. |
-| `docs/` | Block diagrams, flowcharts, design walkthroughs. |
+| `Module 4 - SCADA/` | Module 4 firmware and host software. |
+| `Module 4 - SCADA/regmap/` | `regmap.yaml`, master register map control file |
+| `Module 4 - SCADA/tools/` | `gen_regmap.py` validates master register map and generates register artifacts. |
+| `Module 4 - SCADA/generated/` | C headers, tag table for the host, and register tables for interface documents. Generated; not edited. |
+| `Module 4 - SCADA/firmware/` | Portable C libraries (Modbus RTU slave, register banks, measurement math, fault record, controller link) and board firmware for the NUCLEO-G474RE node controller. |
+| `Module 4 - SCADA/host/` | Host service in Python: fieldbus poller, alarms, demand controller, SQLite historian, and supervisory API. |
+| `Module 4 - SCADA/sim/` | Simulated nodes and load control unit on virtual serial ports. |
+| `Module 4 - SCADA/tests/` | Unit tests, end-to-end tests, and an emulated run of the board firmware. |
+| `docs/` | System block diagram and the [Module 4 firmware diagrams](docs/m4_firmware-diagrams.pdf): flowcharts and plain-language walkthroughs of the firmware and host software. |
 
-Folders for Modules 1 to 3 are on the way.
+The folders for Modules 1 to 3 each hold a status page. Their design is recorded in the Design Report,
+and module files are added as each module is built.
 
 ## Module 4 Software
 
-Builds and tests on a PC; no bench hardware needed. Run commands from `Module4/`.
+Builds and tests on a PC; no bench hardware needed. Run commands from `Module 4 - SCADA/`.
 
 | Command | Result |
 | --- | --- |
@@ -66,7 +67,7 @@ Builds and tests on a PC; no bench hardware needed. Run commands from `Module4/`
 Requirements:
 
 - Linux, `make`, and a C99 compiler.
-- Python 3 with packages listed in `Module4/requirements.txt`.
+- Python 3 with packages listed in `Module 4 - SCADA/requirements.txt`.
 - `arm-none-eabi-gcc` (for `make fw` only).
 
 ### Design Overview

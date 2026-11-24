@@ -1,7 +1,7 @@
 # SGTB Module 4: Directory
-T. Bassett | 2026-11-23
+T. Bassett | 2026-11-24
 
-Lists every file of the package, the package history, and the test cases with the files that serve them.
+Lists every file of the package and the test cases with the files that serve them.
 
 ## Folders
 
@@ -109,28 +109,6 @@ Lists every file of the package, the package history, and the test cases with th
 | `test_host.py` | Host poller and historian against the simulator |
 | `test_api.py` | API and demand controller against the simulator |
 | `emu_nucleo.py` | Node images on a Cortex-M4 emulator (`make emu`) |
-
-## Packages
-
-Each package is cumulative, and the latest is current.
-
-| Package | Date | Adds |
-| --- | --- | --- |
-| `m4fw_step1.zip` | 2026-11-14 | Register map source and generator; Modbus RTU slave; register banks; unit tests and cross-check |
-| `m4fw_step2.zip` | 2026-11-14 | Measurement math; node application; simulator; host Modbus master and live table |
-| `m4fw_step3.zip` | 2026-11-14 | Host poller and historian; host end-to-end test |
-| `m4fw_step4.zip` | 2026-11-14 | Supervisory API; demand controller; API end-to-end test |
-| `m4fw_step5.zip` | 2026-11-20 | NUCLEO-G474RE node firmware and prebuilt images; emulated test |
-| `m4fw_step6.zip` | 2026-11-21 | Fault record; ICD-4 link protocol; two unit-test suites |
-| `m4fw_step7.zip` | 2026-11-22 | Register map 0.2 (float32); firmware version 0.2 |
-| `m4fw_step8.zip` | 2026-11-22 | Fault record layout version 2 (float32); source comments revised |
-| `m4fw_step9.zip` | 2026-11-22 | Host check of the node firmware version; `regmap.yaml` and `gen_regmap.py` as pushed to the team repository |
-| `m4fw_step10.zip` | 2026-11-22 | Source comments revised |
-| `m4fw_step11.zip` | 2026-11-22 | Source file headers revised |
-| `m4fw_step12.zip` | 2026-11-22 | Source comments revised |
-| `m4fw_step13.zip` | 2026-11-23 | `README.md` as revised by the engineer |
-| `m4fw_step14.zip` | 2026-11-23 | `DIRECTORY.md` and the board `README.md` revised |
-| `m4fw_step15.zip` | 2026-11-23 | Board `DESIGN.md` added in place of `BRINGUP.md`; `README.md` and the board `README.md` shortened |
 
 ## Test cases
 
