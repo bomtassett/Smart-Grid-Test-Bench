@@ -75,7 +75,7 @@ Requirements:
 - **Measurement.** Five nodes sample voltage and current at 3840 Hz and
   compute RMS voltage and current, active, reactive, and apparent power, power
   factor, frequency, and energy for each cycle. Each node connects to Module 4's [custom
-  sensing front-end circuitry](docs/m4_sensor-design_v1.2.pdf).
+  sensing front-end circuitry](docs/m4_sensor-design_v1.3.pdf).
 - **Fieldbus.** The host polls every node at 10 Hz over Modbus RTU on RS-485.
 - **Fault record.** During a protection trip the node freezes its per-cycle results
   from 0.2 s before to 2.0 s after the trip, with a clip of raw samples.
